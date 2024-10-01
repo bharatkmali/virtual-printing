@@ -1,0 +1,13 @@
+.login-container {
+  background-image: url("https://example.com/your-background-image.jpg");
+  /* If using a local image, use the relative path from the public folder */
+  /* background-image: url('/images/your-local-image.jpg'); */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
