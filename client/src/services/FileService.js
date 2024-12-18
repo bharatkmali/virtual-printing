@@ -21,12 +21,3 @@ export const getFiles = async () => {
   }
 };
 
-export const getFilesCount = async () => {
-  try {
-    const { data } = await axios.get("http://localhost:8080/files/count");
-    return data.count;
-  } catch (error) {
-    console.log("error", error);
-    return 0;
-  }
-};

@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import { getPDFPageCount } from '../utils/pdfUtils';
 
 export const DragUpload = (props) => {
-  const { handleUploadFile,setFileList } = props;
+  const { handleUploadFile,pageCount,setPageCount } = props;
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
+
 
   const handleFileChange = async (event) => {
-    debugger
     const files = Array.from(event.target.files);
     if (files.length > 0) {
       setSelectedFiles(files);

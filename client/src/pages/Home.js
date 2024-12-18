@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import FileCount from "../components/FileCount";
+
 import { DragUpload } from "../components/DragUpload";
 import { uploadFile, getFiles } from "../services/FileService";
 const Home = () => {
@@ -9,16 +9,11 @@ const Home = () => {
     previewSrc: "",
     uploadStatus: "",
   });
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState();
+  const [pageCount, setPageCount] = useState(0);
   const [refreshCount, setRefreshCount] = useState(0);
 console.log("fileList",fileList)
-  // useEffect(() => {
-  //   const fetchFiles = async () => {
-  //     const files = await getFiles();
-  //     setFileList(files);
-  //   };
-  //   fetchFiles();
-  // }, []);
+ 
   const handleUploadFile = async (files) => {
     console.log(files)
     const file = files[0];
@@ -42,9 +37,13 @@ console.log("fileList",fileList)
     <>
       <div className="justify-center flex p-12 align-middle flex-col text-center gap-4">
         <text className="font-bold text-xl">Upload File For Print</text>
-        <FileCount refreshTrigger={refreshCount} />
+        <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow">
+      <h2 className="text-lg font-semibold">Total Pages</h2>
+      <p className="text-3xl font-bold text-blue-600">{pageCount}</p>
+      {pageCount>0 && <p className="text-sm text-gray-500">Total Amount = <span className="text-3xl font-bold text-blue-600">{pageCount* 2.5}</span></p>}
+    </div>
         <form onSubmit={handleFileUpload} enctype="multipart/form-data">
-          <DragUpload handleUploadFile={handleUploadFile} setFileList={setFileList} />
+          <DragUpload handleUploadFile={handleUploadFile} setPageCount={setPageCount} pageCount={pageCount}/>
           <button className="bg-slate-500 mt-4 p-4" type="submit">
             Upload submit
           </button>
