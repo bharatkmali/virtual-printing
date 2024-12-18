@@ -17,6 +17,10 @@ const fileSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  pageCount: {
+    type: Number,
+    default: null
+  },
 });
 
 module.exports = mongoose.model('File', fileSchema);

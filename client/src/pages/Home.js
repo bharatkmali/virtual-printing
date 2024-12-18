@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import FileCount from "../components/FileCount";
 import { DragUpload } from "../components/DragUpload";
 import { uploadFile, getFiles } from "../services/FileService";
 const Home = () => {
@@ -9,7 +10,8 @@ const Home = () => {
     uploadStatus: "",
   });
   const [fileList, setFileList] = useState([]);
-
+  const [refreshCount, setRefreshCount] = useState(0);
+console.log("fileList",fileList)
   // useEffect(() => {
   //   const fetchFiles = async () => {
   //     const files = await getFiles();
@@ -17,10 +19,10 @@ const Home = () => {
   //   };
   //   fetchFiles();
   // }, []);
-  const handleUploadFile = async (e) => {
-    const file = e.target.files[0];
+  const handleUploadFile = async (files) => {
+    console.log(files)
+    const file = files[0];
     if (file) {
-      console.log("e", e);
       setState((prevState) => ({ ...prevState, files: file }));
       // File preview
       const reader = new FileReader();
@@ -32,38 +34,22 @@ const Home = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("file", state?.files);
-    await uploadFile(formData);
-    window.location.reload();
+    // await uploadFile(formData);
+    setRefreshCount(prev => prev + 1);
+    // window.location.reload();
   };
   return (
     <>
       <div className="justify-center flex p-12 align-middle flex-col text-center gap-4">
         <text className="font-bold text-xl">Upload File For Print</text>
-        <form onSubmit={handleFileUpload}>
-          <DragUpload handleUploadFile={handleUploadFile} />
+        <FileCount refreshTrigger={refreshCount} />
+        <form onSubmit={handleFileUpload} enctype="multipart/form-data">
+          <DragUpload handleUploadFile={handleUploadFile} setFileList={setFileList} />
           <button className="bg-slate-500 mt-4 p-4" type="submit">
-            Upload submitfe
+            Upload submit
           </button>
         </form>
 
-        {state?.previewSrc && (
-          <div>
-            <h3>Preview:</h3>
-            <img src={state?.previewSrc} alt="preview" style={{ maxWidth: "300px" }} />
-          </div>
-        )}
-        <p>{state?.uploadStatus}</p>
-
-        <h2>Uploaded Files</h2>
-        <ul>
-          {fileList.map((file) => (
-            <li key={file._id}>
-              <a href={`http://localhost:5000${file.filepath}`} target="_blank" rel="noopener noreferrer">
-                {file.filename}
-              </a>
-            </li>
-          ))}
-        </ul>
       </div>
     </>
   );

@@ -11,16 +11,29 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
+  // Allow only specific mime types
+  const allowedMimeTypes = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'image/jpeg',
+    'image/png',
+    'image/gif'
+  ];
+  
+  if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Not an image! Please upload only images.'), false);
+    cb(new Error('Invalid file type. Only PDF, DOC, DOCX, and image files (JPEG, PNG, GIF) are allowed.'), false);
   }
 };
 
 const upload = multer({
-  storage,
-  fileFilter,
-});
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB file size limit
+  }
+}).array('files', 10); // Allow up to 10 files
 
 module.exports = upload;

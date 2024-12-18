@@ -1,18 +1,34 @@
 const File = require("../models/FileModels");
+const { getPDFPageCount } = require("../utils/pdfUtils");
 
 const uploadFile = async (req, res) => {
   try {
-    const { originalname, mimetype, path, size } = req.file;
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "No files were uploaded." });
+    }
 
-    const file = new File({
-      filename: originalname,
-      contentType: mimetype,
-      path,
-      size,
+    const savedFiles = await Promise.all(
+      req.files.map(async (file) => {
+        const { originalname, mimetype, path, size } = file;
+        let pageCount = null;
+        if (mimetype === 'application/pdf') {
+          pageCount = await getPDFPageCount(path);
+        }
+        const newFile = new File({
+          filename: originalname,
+          contentType: mimetype,
+          path,
+          size,
+          pageCount,
+        });
+        return await newFile.save();
+      })
+    );
+
+    res.status(201).json({ 
+      message: "Files uploaded successfully", 
+      files: savedFiles 
     });
-
-    await file.save();
-    res.status(201).json({ message: "File uploaded successfully", file });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -27,4 +43,13 @@ const getAllFiles = async (req, res) => {
   }
 };
 
-module.exports = { uploadFile, getAllFiles };
+const getFilesCount = async (req, res) => {
+  try {
+    const count = await File.countDocuments();
+    res.status(200).json({ count });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { uploadFile, getAllFiles, getFilesCount };
