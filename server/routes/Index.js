@@ -1,14 +1,17 @@
 const express = require("express");
-const multer = require("multer");
+const path = require("path");
 const router = express.Router();
-const { uploadFile, getAllFiles, getFilesCount } = require("../controllers/fileController");
-// const upload = require("../middleware/Upload");
-// Set up Multer for file uploads
-const storage = multer.memoryStorage(); // Store file in memory buffer
-const upload = multer({ storage });
+const { uploadFile, getAllFiles, getFilesCount, printFiles } = require("../controllers/fileController");
+const upload = require("../middleware/FileUpload");
+const fs = require('fs');
 
-router.post("/upload", upload.single("filesUploads"), uploadFile);
+// Create uploads folder if not exists
+const uploadDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+
+router.post('/upload', upload, uploadFile);
 router.get("/files", getAllFiles);
 router.get("/files/count", getFilesCount);
+router.post("/print", printFiles);
 
 module.exports = router;
