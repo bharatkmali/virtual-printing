@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { getPDFPageCount } from '../utils/pdfUtils';
 
 export const DragUpload = (props) => {
-  const { handleUploadFile,pageCount,setPageCount } = props;
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const { handleUploadFile,pageCount,setPageCount,setSelectedFiles,selectedFiles } = props;
+ 
   const [previewUrls, setPreviewUrls] = useState([]);
 
 
@@ -37,10 +37,10 @@ export const DragUpload = (props) => {
       setPreviewUrls(urls);
       console.log("files", files)
       // Create FormData and append all files
-      const formData = []
+      const formData = new FormData();
       files.forEach(file => {
         console.log("file", file)
-        formData.push(file);
+        formData.append('files', file);
       });
       console.log("formData", formData)
       
